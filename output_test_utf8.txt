@@ -1,0 +1,24 @@
+﻿=================================================================
+ EXPERIMENTO ACAD╔MICO: Capacitated Vehicle Routing Problem
+=================================================================
+-----------------------------------------------------------------
+ INFORMACIËN DEL SISTEMA
+-----------------------------------------------------------------
+  SO:              Windows 11 (10.0.26200)
+  Arquitectura:    AMD64
+  Procesador:      AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD
+  Python:          3.13.5
+  (Instale 'psutil' para ver detalles de CPU/RAM: pip install psutil)
+-----------------------------------------------------------------
+#nodos: 1 --> Tiempo: 0.65 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 2 --> Tiempo: 0.08 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 3 --> Tiempo: 0.08 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 4 --> Tiempo: 0.16 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 5 --> Tiempo: 0.23 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 6 --> Tiempo: 0.31 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 7 --> Tiempo: 1.20 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 8 --> Tiempo: 2.55 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 9 --> Tiempo: 12.16 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 10 --> Tiempo: 20.34 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 11 --> Tiempo: 44.42 segundos, Soluci¾n: Factible (Ëptimo)
+#nodos: 12 --> Tiempo: 60.14 segundos, Soluci¾n: Factible (Aproximado)

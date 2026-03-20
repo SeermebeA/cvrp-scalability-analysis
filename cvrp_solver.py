@@ -173,9 +173,10 @@ def solve_cvrp_iteration(num_nodes, capacity=100, time_limit=60):
     N = range(num_nodes)  # Conjunto de todos los nodos (incluyendo el depósito)
     C = range(1, num_nodes) # Conjunto de clientes (nodos sin el depósito)
     
-    # Cálculo aproximado de vehículos necesarios (total demanda / capacidad + margen)
+    # Cálculo STRICTO de vehículos necesarios (sin margen de seguridad)
+    # Esto fuerza al solver a resolver un problema de empaquetado (Bin Packing) mucho más complejo.
     total_demand = sum(n['demand'] for n in nodes)
-    num_vehicles = math.ceil(total_demand / capacity) + 2 
+    num_vehicles = math.ceil(total_demand / capacity) 
     
     # Definición del problema: Minimizar costo (distancias)
     model = pulp.LpProblem("Capacitated_VRP", pulp.LpMinimize)
@@ -221,7 +222,12 @@ def solve_cvrp_iteration(num_nodes, capacity=100, time_limit=60):
                 model += u[i] - u[j] + capacity * x[(i, j)] <= capacity - nodes[j]['demand']
 
     # RESOLUCIÓN usando el solver CBC por defecto (incluido en PuLP)
-    solver = pulp.PULP_CBC_CMD(timeLimit=time_limit, msg=False)
+    # gapRel=0.05: el solver para al encontrar una solución dentro del 5% del óptimo.
+    solver_kwargs = {'msg': False, 'gapRel': 0.025}
+    if time_limit is not None:
+        solver_kwargs['timeLimit'] = time_limit
+    
+    solver = pulp.PULP_CBC_CMD(**solver_kwargs)
     model.solve(solver)
     
     end_time = time.perf_counter()
@@ -237,12 +243,20 @@ def solve_cvrp_iteration(num_nodes, capacity=100, time_limit=60):
     except Exception:
         pass
 
-    # Si la solución es óptima o al menos factible, graficamos el resultado
-    if status_label == "Optimal" or (has_solution and getattr(model, "objective", None) is not None):
+    # Evaluar la razón por la que el solver se detuvo
+    if status_label == "Optimal":
         draw_cvrp_solution(nodes, x, num_nodes)
-        return "Factible", exec_time_s
+        return "Factible (Óptimo)", exec_time_s
+    elif has_solution:
+        draw_cvrp_solution(nodes, x, num_nodes)
+        return "Factible (Aproximado)", exec_time_s
+    elif status_label == "Infeasible":
+        # Las matemáticas determinaron que es estructuralmente imposible de resolver
+        # con la capacidad y número de vehículos dados (Fallo real de modelo)
+        return "Infactible (Matemático)", exec_time_s
     else:
-        return "No encontrada", exec_time_s
+        # Probablemente "Not Solved" debido a agotamiento de tiempo antes de hallar nada
+        return "No encontrada (Tiempo Excedido)", exec_time_s
 
 def print_system_info():
     """Muestra las características del ambiente de ejecución."""
@@ -273,21 +287,28 @@ def main():
     print("=================================================================")
     print_system_info()
     
-    # Tiempo límite por cada instancia de resolución (en segundos)
+    # Reducimos la capacidad a 50 (desde 100) para forzar un problema de empaquetado más difícil
+    capacity = 50
+    
+    # Tiempo límite por cada instancia (opcional, None = sin límite)
+    # Volvemos a un límite seguro para evitar congelamientos si el problema se vuelve NP-Hard extremo
     time_limit = 60
     
-    # Iniciamos con 10 nodos y escalamos hasta 50
-    for num_nodes in range(10, 51):
-        status, exec_time = solve_cvrp_iteration(num_nodes=num_nodes, time_limit=time_limit)
+    # Iniciamos con 1 nodo y escalamos de 1 en 1
+    for num_nodes in range(1, 1001):
+        status, exec_time = solve_cvrp_iteration(num_nodes=num_nodes, capacity=capacity, time_limit=time_limit)
         
         # Mostramos resultados en tiempo real
         print(f"#nodos: {num_nodes} --> Tiempo: {exec_time:.2f} segundos, Solución: {status}", flush=True)
         
-        # Si el problema deja de ser resoluble o toma demasiado tiempo, detenemos el experimento
-        if status == "No encontrada" or exec_time > (time_limit + 5):
+        # El experimento se detiene solo cuando las matemáticas prueban que es imposible, 
+        # independientemente de cuánto tiempo tome.
+        if status.startswith("Infactible"):
             print("=================================================================")
-            print("FIN DEL EXPERIMENTO: Límite de complejidad alcanzado.")
+            print(f"FIN DEL EXPERIMENTO: Imposible empaquetar de forma válida a {num_nodes} nodos bajo estas reglas.")
             break
+        elif status == "No encontrada (Tiempo Excedido)":
+            print("  -> (Nota: Llegó al límite sin resultados, pero el script continuará probando el siguiente...)")
 
 if __name__ == "__main__":
     main()
