@@ -10,7 +10,7 @@ El proyecto se desarrolla a través de tres componentes clave que definen su pro
 
 a.  **Fundamentación Logística**: El problema CVRP consiste en planificar una serie de rutas de entrega que parten de un depósito central para visitar a un conjunto de clientes y satisfacer su demanda, regresando al punto de origen sin exceder la capacidad máxima de cada vehículo y minimizando la distancia total.
 
-b.  **Objetivo del Experimento**: El fin principal es realizar un **Análisis de Escalabilidad**. Se busca identificar el "techo computacional" del solver al incrementar de forma sucesiva el número de clientes (desde 10 hasta 50), observando cómo el tiempo de resolución crece de forma no lineal (NP-Hard).
+b.  **Objetivo del Experimento**: El fin principal es realizar un **Análisis de Escalabilidad**. Se busca identificar el "techo computacional" del solver al incrementar de forma sucesiva el número de clientes, observando cómo el tiempo de resolución crece de forma no lineal (NP-Hard).
 
 c.  **Visualización y Evidencia**: No solo se busca una respuesta numérica; el proyecto genera evidencia visual de cada solución factible, permitiendo verificar que las rutas sean lógicas y que cada nodo sea visitado mediante una gestión eficiente del flujo de carga.
 
