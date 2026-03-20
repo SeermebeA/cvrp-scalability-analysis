@@ -28,6 +28,8 @@ c.  **Capacidad de Flota**: Cada vehículo posee una capacidad fija de **100 uni
 
 d.  **Demandas de Clientes**: Cada cliente (`id: i`) requiere una carga aleatoria entre **1 y 33 unidades**, lo que obliga a la flota a realizar varias rutas separadas cuando la demanda total acumulada de un conjunto de clientes supera las 100 unidades.
 
+e.  **Persistencia Incremental**: Los datos de todos los nodos (coordenadas y demandas) se almacenan en `data/cvrp_nodes.csv`. En cada iteración se reutilizan los nodos previos y solo se generan los faltantes, garantizando continuidad entre ejecuciones.
+
 ---
 
 ## 3. Metodologías y Tecnologías Aplicadas
@@ -48,8 +50,8 @@ d.  **Graficación por Capas (NetworkX/Matplotlib)**: Una metodología de repres
 
 El script `cvrp_solver.py` se organiza en sus funciones críticas de modelado y un sistema de evaluación de resultados:
 
-a.  **Generación de Vectores** (`generate_cvrp_data`)
--   Implementa la lógica de generación aleatoria reproducible mediante semillas (`seed`).
+a.  **Generación y Persistencia de Datos** (`generate_cvrp_data`)
+-   Carga nodos existentes desde `data/cvrp_nodes.csv` y genera solo los faltantes con semilla fija (`seed=42`).
 -   Calcula la **Matriz de Distancias Euclidiana** para que el modelo conozca el costo de viajar de cualquier nodo A al B.
 
 b.  **El Núcleo de Modelado** (`solve_cvrp_iteration`)
@@ -62,8 +64,10 @@ b.  **El Núcleo de Modelado** (`solve_cvrp_iteration`)
 c.  **Renderizado de Solución** (`draw_cvrp_solution`)
 -   Extrae las variables `x_ij` activas y crea un objeto `nx.DiGraph`.
 -   Diferencia visualmente el depósito (rojo) de los clientes (azul cielo) y dibuja flechas de dirección para las rutas.
+-   Incluye reglas de medida en ambos ejes (ticks cada 10 unidades de distancia).
 
 d.  **Orquestador Principal** (`main`)
+-   Imprime las características del sistema (SO, procesador, RAM) antes de iniciar el experimento.
 -   Ejecuta el bucle incremental (incrementando `num_nodes`). Registra tiempos de ejecución y detiene el proceso automáticamente al detectar un tiempo excesivo o una solución no encontrada.
 
 e.  **Lógica de Clasificación de Estados**
@@ -94,27 +98,33 @@ python cvrp_solver.py
 
 A continuación se muestra el comportamiento observado durante el análisis:
 
+### Ambiente de Ejecución
+
+```
+SO:              Windows 11 (10.0.26200)
+Arquitectura:    AMD64
+Procesador:      AMD64 Family 25 Model 68 Stepping 1, AuthenticAMD
+Python:          3.13.5
+```
+
+### Resultados
+
 | Nodos | Tiempo (seg) | Estado |
 |-------|--------------|--------|
-| 10 | 3.47 | Factible |
-| 11 | 4.43 | Factible |
-| 12 | 4.81 | Factible |
-| 13 | 60.11 | Factible |
-| 14 | 56.97 | Factible |
-| 15 | 60.21 | Factible |
-| 16 | 47.03 | Factible |
-| 17 | 59.91 | Factible |
-| 18 | 59.93 | Factible |
-| 19 | 1459.58 | Factible |
-| 20 | --- | No encontrada |
+| 10 | 3.70 | Factible |
+| 11 | 3.44 | Factible |
+| 12 | 21.05 | Factible |
+| 13 | 59.95 | Factible |
+| 14 | 61.04 | Factible |
+| 15 | 62.11 | Factible |
+| 16 | 65.28 | Factible |
+| 17 | --- | No encontrada |
 
-![Solución 10](plots/cvrp_solution_10_nodes.png)
-![Solución 11](plots/cvrp_solution_11_nodes.png)
-![Solución 12](plots/cvrp_solution_12_nodes.png)
-![Solución 13](plots/cvrp_solution_13_nodes.png)
-![Solución 14](plots/cvrp_solution_14_nodes.png)
-![Solución 15](plots/cvrp_solution_15_nodes.png)
-![Solución 16](plots/cvrp_solution_16_nodes.png)
-![Solución 17](plots/cvrp_solution_17_nodes.png)
-![Solución 18](plots/cvrp_solution_18_nodes.png)
-![Solución 19](plots/cvrp_solution_19_nodes.png)
+![Análisis de Escalabilidad](plots/scalability_chart.png)
+![Solución para 10 nodos](plots/cvrp_solution_10_nodes.png)
+![Solución para 11 nodos](plots/cvrp_solution_11_nodes.png)
+![Solución para 12 nodos](plots/cvrp_solution_12_nodes.png)
+![Solución para 13 nodos](plots/cvrp_solution_13_nodes.png)
+![Solución para 14 nodos](plots/cvrp_solution_14_nodes.png)
+![Solución para 15 nodos](plots/cvrp_solution_15_nodes.png)
+![Solución para 16 nodos](plots/cvrp_solution_16_nodes.png)
