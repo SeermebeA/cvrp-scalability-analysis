@@ -9,7 +9,9 @@ Este documento describe la resolución y análisis del **Problema de Rutas de Ve
 El proyecto se desarrolla a través de tres componentes clave que definen su propósito:
 
 a.  **Fundamentación Logística**: El problema CVRP consiste en planificar una serie de rutas de entrega que parten de un depósito central para visitar a un conjunto de clientes y satisfacer su demanda, regresando al punto de origen sin exceder la capacidad máxima de cada vehículo y minimizando la distancia total.
+
 b.  **Objetivo del Experimento**: El fin principal es realizar un **Análisis de Escalabilidad**. Se busca identificar el "techo computacional" del solver al incrementar de forma sucesiva el número de clientes (desde 10 hasta 50), observando cómo el tiempo de resolución crece de forma no lineal (NP-Hard).
+
 c.  **Visualización y Evidencia**: No solo se busca una respuesta numérica; el proyecto genera evidencia visual de cada solución factible, permitiendo verificar que las rutas sean lógicas y que cada nodo sea visitado mediante una gestión eficiente del flujo de carga.
 
 ---
@@ -19,8 +21,11 @@ c.  **Visualización y Evidencia**: No solo se busca una respuesta numérica; el
 Para este estudio se generan datos sintéticos que representan un escenario de distribución urbana estándar:
 
 a.  **Malla Geográfica**: Se utiliza un plano cartesiano de 100x100 unidades de distancia donde los nodos (clientes) aparecen de forma aleatoria.
+
 b.  **El Depósito (Nodo 0)**: Se establece una coordenada central aleatoria que sirve como inicio y fin obligatorio para todos los vehículos. Su demanda es siempre cero.
+
 c.  **Capacidad de Flota**: Cada vehículo posee una capacidad fija de **100 unidades**.
+
 d.  **Demandas de Clientes**: Cada cliente (`id: i`) requiere una carga aleatoria entre **1 y 33 unidades**, lo que obliga a la flota a realizar varias rutas separadas cuando la demanda total acumulada de un conjunto de clientes supera las 100 unidades.
 
 ---
@@ -30,8 +35,11 @@ d.  **Demandas de Clientes**: Cada cliente (`id: i`) requiere una carga aleatori
 La resolución de este caso se basa en técnicas de investigación de operaciones avanzadas:
 
 a.  **Programación Lineal Entera Mixta (MIP)**: Se define el problema mediante variables binarias para decidir recorridos y variables continuas para gestionar la carga acumulada.
+
 b.  **Formulación Miller-Tucker-Zemlin (MTZ)**: Es la metodología usada para la **eliminación de subtours**. Esta técnica garantiza matemáticamente que los vehículos no formen "mini-ciclos" cerrados entre clientes sin pasar primero por el depósito.
+
 c.  **Optimización bajo PuLP/CBC**: Se utiliza el lenguaje de modelado PuLP y el motor de optimización CBC para encontrar la solución óptima del modelo planteado.
+
 d.  **Graficación por Capas (NetworkX/Matplotlib)**: Una metodología de representación de grafos direccionados para superponer las rutas óptimas sobre las coordenadas geográficas de los clientes.
 
 ---
