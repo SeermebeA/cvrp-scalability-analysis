@@ -36,9 +36,9 @@ d.  **Graficación por Capas (NetworkX/Matplotlib)**: Una metodología de repres
 
 ---
 
-## 4. Arquitectura e Implementación del Código
+## 4. Arquitectura, Implementación y Clasificación de Estados
 
-El script `cvrp_solver.py` se organiza en cuatro funciones críticas que operan en flujo secuencial:
+El script `cvrp_solver.py` se organiza en sus funciones críticas de modelado y un sistema de evaluación de resultados:
 
 a.  **Generación de Vectores** (`generate_cvrp_data`)
 -   Implementa la lógica de generación aleatoria reproducible mediante semillas (`seed`).
@@ -56,7 +56,12 @@ c.  **Renderizado de Solución** (`draw_cvrp_solution`)
 -   Diferencia visualmente el depósito (rojo) de los clientes (azul cielo) y dibuja flechas de dirección para las rutas.
 
 d.  **Orquestador Principal** (`main`)
--   Ejecuta el bucle incremental. Incrementa el número de nodos (`num_nodes`) y registra los tiempos de ejecución. Detiene el proceso automáticamente cuando se detecta un tiempo excesivo o una solución no encontrada.
+-   Ejecuta el bucle incremental (incrementando `num_nodes`). Registra tiempos de ejecución y detiene el proceso automáticamente al detectar un tiempo excesivo o una solución no encontrada.
+
+e.  **Lógica de Clasificación de Estados**
+El sistema categoriza el resultado de cada experimento basándose en las reglas del modelo y los límites de ejecución:
+-   **Estado: Factible**: El solver (**CBC**) halla una configuración que satisface todas las restricciones (visita única, capacidad de 100 y eliminación de subtours MTZ) y genera el gráfico en `plots/`.
+-   **Estado: No encontrada**: Se dispara principalmente por el **límite de tiempo de 60 segundos** por instancia o por alcanzar la complejidad **NP-Hard** del problema.
 
 ---
 
@@ -92,7 +97,8 @@ A continuación se muestra el comportamiento observado durante el análisis:
 | 16 | 47.03 | Factible |
 | 17 | 59.91 | Factible |
 | 18 | 59.93 | Factible |
-| 19 | 1459.58 | No encontrada |
+| 19 | 1459.58 | Factible |
+| 20 | --- | No encontrada |
 
 ![Solución 10](plots/cvrp_solution_10_nodes.png)
 ![Solución 11](plots/cvrp_solution_11_nodes.png)
