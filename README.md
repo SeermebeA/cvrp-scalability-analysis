@@ -40,22 +40,22 @@ d.  **Graficación por Capas (NetworkX/Matplotlib)**: Una metodología de repres
 
 El script `cvrp_solver.py` se organiza en cuatro funciones críticas que operan en flujo secuencial:
 
-a.  **Generación de Vectores (`generate_cvrp_data`)
+a.  **Generación de Vectores** (`generate_cvrp_data`)
 -   Implementa la lógica de generación aleatoria reproducible mediante semillas (`seed`).
 -   Calcula la **Matriz de Distancias Euclidiana** para que el modelo conozca el costo de viajar de cualquier nodo A al B.
 
-b.  **El Núcleo de Modelado (`solve_cvrp_iteration`)
+b.  **El Núcleo de Modelado** (`solve_cvrp_iteration`)
 -   **Variables**:
     -   `x_ij`: 1 si se viaja de `i` a `j`, 0 de lo contrario.
     -   `u_i`: Nivel de carga acumulada al llegar al cliente `i`.
 -   **Restricciones de flujo**: Garantizan que entra un vehículo y sale un vehículo por cada cliente.
 -   **Restricciones de capacidad**: Impiden que la variable `u_i` supere las 100 unidades.
 
-c.  **Renderizado de Solución (`draw_cvrp_solution`)
+c.  **Renderizado de Solución** (`draw_cvrp_solution`)
 -   Extrae las variables `x_ij` activas y crea un objeto `nx.DiGraph`.
 -   Diferencia visualmente el depósito (rojo) de los clientes (azul cielo) y dibuja flechas de dirección para las rutas.
 
-d.  **Orquestador Principal (`main`)
+d.  **Orquestador Principal** (`main`)
 -   Ejecuta el bucle incremental. Incrementa el número de nodos (`num_nodes`) y registra los tiempos de ejecución. Detiene el proceso automáticamente cuando se detecta un tiempo excesivo o una solución no encontrada.
 
 ---
